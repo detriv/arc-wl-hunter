@@ -51,6 +51,9 @@ class Config:
     # Twitter API (for cloud deployment where cookies don't work)
     twitter_bearer_token: str | None = None
 
+    # Nitter instance URL (free, no API key)
+    nitter_url: str | None = None
+
     # Browser
     browser_profile_dir: str = "data/browser-profile"
     browser_headless: bool = False
@@ -98,6 +101,7 @@ class Config:
             x_auth_token=_getenv("X_AUTH_TOKEN"),
             x_ct0=_getenv("X_CT0"),
             twitter_bearer_token=_getenv("TWITTER_BEARER_TOKEN"),
+            nitter_url=_getenv("NITTER_URL"),
             browser_profile_dir=_getenv("BROWSER_PROFILE_DIR", "data/browser-profile"),
             browser_headless=_getenv_bool("BROWSER_HEADLESS", False),
             poll_interval_seconds=_getenv_int("POLL_INTERVAL_SECONDS", 300),

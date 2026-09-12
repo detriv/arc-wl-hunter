@@ -61,15 +61,21 @@ class Monitor:
 
         # X Provider — pick based on env:
         # USE_TWITTER_API=true → Twitter API v2 (cloud, Bearer Token)
+        # USE_NITTER=true       → Nitter RSS (cloud, free, no key)
         # USE_HTTP_PROVIDER=true → HTTP GraphQL (cloud, cookies)
-        # otherwise → Playwright (local, browser)
+        # otherwise             → Playwright (local, browser)
         use_twitter_api = os.getenv("USE_TWITTER_API", "").lower() in ("1", "true", "yes")
+        use_nitter = os.getenv("USE_NITTER", "").lower() in ("1", "true", "yes")
         use_http = os.getenv("USE_HTTP_PROVIDER", "").lower() in ("1", "true", "yes")
 
         if use_twitter_api:
             self.logger.info("Using Twitter API v2 provider (Bearer Token)")
             from x_provider.twitter_api_provider import TwitterApiProvider
             self.provider = TwitterApiProvider(self.config, self.logger)
+        elif use_nitter:
+            self.logger.info("Using Nitter RSS provider (free, no key)")
+            from x_provider.nitter_provider import NitterProvider
+            self.provider = NitterProvider(self.config, self.logger)
         elif use_http:
             self.logger.info("Using HTTP X provider (no browser)")
             from x_provider.http_provider import HttpXProvider
