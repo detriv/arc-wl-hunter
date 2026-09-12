@@ -45,14 +45,14 @@ class PlaywrightXProvider(XProvider):
         """Launch Chromium with persistent context."""
         self.logger.info("Launching Chromium...")
 
-        profile_dir = Path(config.browser_profile_dir)
+        profile_dir = Path(self.config.browser_profile_dir)
         profile_dir.mkdir(parents=True, exist_ok=True)
 
         self._playwright = await async_playwright().start()
 
         self._context = await self._playwright.chromium.launch_persistent_context(
             user_data_dir=str(profile_dir),
-            headless=config.browser_headless,
+            headless=self.config.browser_headless,
             viewport={"width": 1280, "height": 900},
             user_agent=(
                 "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
@@ -151,7 +151,7 @@ class PlaywrightXProvider(XProvider):
         """Launch browser for manual X login."""
         self.logger.info("Starting Chromium for X login...")
 
-        profile_dir = Path(config.browser_profile_dir)
+        profile_dir = Path(self.config.browser_profile_dir)
         profile_dir.mkdir(parents=True, exist_ok=True)
 
         self._playwright = await async_playwright().start()
@@ -189,7 +189,7 @@ class PlaywrightXProvider(XProvider):
         is_auth = await self.validate_session()
         if is_auth:
             print("\n✓ X authentication detected.")
-            print(f"✓ Persistent browser profile saved to: {config.browser_profile_dir}")
+            print(f"✓ Persistent browser profile saved to: {self.config.browser_profile_dir}")
             print("\nYou can now run: python app.py")
         else:
             print("\n✗ Could not verify X authentication.")
