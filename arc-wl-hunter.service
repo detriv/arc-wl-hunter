@@ -1,0 +1,21 @@
+[Unit]
+Description=Arc NFT Whitelist Hunter
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/arc-wl-hunter
+ExecStart=%h/arc-wl-hunter/.venv/bin/python %h/arc-wl-hunter/app.py
+Restart=on-failure
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=%h/arc-wl-hunter/data
+
+[Install]
+WantedBy=default.target
