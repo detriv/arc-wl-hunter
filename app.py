@@ -37,6 +37,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="Send test Telegram message",
     )
     parser.add_argument(
+        "--test-discord",
+        action="store_true",
+        help="Send test Discord message",
+    )
+    parser.add_argument(
         "--test-db",
         action="store_true",
         help="Test database initialization",
@@ -147,6 +152,22 @@ async def run_test_telegram(config: Config, logger) -> None:
         logger.error("Telegram test failed.")
 
 
+async def run_test_discord(config: Config, logger) -> None:
+    """Send test Discord message."""
+    if not config.discord_webhook_url:
+        logger.error("Discord not configured. Set DISCORD_WEBHOOK_URL in .env")
+        return
+
+    from notifier.discord import DiscordNotifier
+
+    notifier = DiscordNotifier(config, logger)
+    success = await notifier.send_test_message()
+    if success:
+        logger.info("Discord test successful.")
+    else:
+        logger.error("Discord test failed.")
+
+
 async def run_test_db(config: Config, logger) -> None:
     """Test database initialization."""
     from database.db import Database
@@ -250,6 +271,8 @@ async def async_main() -> None:
             await run_test_x(config, logger)
         elif args.test_telegram:
             await run_test_telegram(config, logger)
+        elif args.test_discord:
+            await run_test_discord(config, logger)
         elif args.test_db:
             await run_test_db(config, logger)
         elif args.test_parser:

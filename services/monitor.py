@@ -49,6 +49,14 @@ class Monitor:
         else:
             self.logger.info("Telegram notifications: DISABLED (not configured)")
 
+        # Discord
+        from notifier.discord import DiscordNotifier
+        self.discord = DiscordNotifier(self.config, self.logger)
+        if self.discord.is_configured():
+            self.logger.info("Discord notifications: ENABLED")
+        else:
+            self.logger.info("Discord notifications: DISABLED (not configured)")
+
         # Browser
         self.provider = PlaywrightXProvider(self.config, self.logger)
         await self.provider.initialize()
@@ -168,12 +176,16 @@ class Monitor:
                         # Store in DB
                         await self._store_post(scored)
 
-                        # Send notification
+                        # Send Telegram notification
                         if self.notifier:
                             sent = await self.notifier.send_alert(scored)
                             if sent:
                                 total_notified += 1
                                 await self.db.mark_notified(post.tweet_id)
+
+                        # Send Discord notification
+                        if self.discord:
+                            await self.discord.send_alert(scored)
 
                 # Delay between queries
                 await asyncio.sleep(self.config.search_delay_seconds)

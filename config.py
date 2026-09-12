@@ -41,6 +41,9 @@ class Config:
     telegram_bot_token: str | None = None
     telegram_chat_id: str | None = None
 
+    # Discord (optional)
+    discord_webhook_url: str | None = None
+
     # X (Twitter) session cookies
     x_auth_token: str | None = None
     x_ct0: str | None = None
@@ -88,6 +91,7 @@ class Config:
         return cls(
             telegram_bot_token=_getenv("TELEGRAM_BOT_TOKEN"),
             telegram_chat_id=_getenv("TELEGRAM_CHAT_ID"),
+            discord_webhook_url=_getenv("DISCORD_WEBHOOK_URL"),
             x_auth_token=_getenv("X_AUTH_TOKEN"),
             x_ct0=_getenv("X_CT0"),
             browser_profile_dir=_getenv("BROWSER_PROFILE_DIR", "data/browser-profile"),
@@ -146,10 +150,13 @@ class Config:
         x_auth_status = "SET" if self.x_auth_token else "NOT SET"
         x_ct0_status = "SET" if self.x_ct0 else "NOT SET"
 
+        discord_status = "SET" if self.discord_webhook_url else "NOT SET"
+
         print("CONFIGURATION STATUS")
         print("--------------------")
         print(f"TELEGRAM_BOT_TOKEN: {token_status}")
         print(f"TELEGRAM_CHAT_ID: {chat_status}")
+        print(f"DISCORD_WEBHOOK_URL: {discord_status}")
         print(f"X_AUTH_TOKEN: {x_auth_status}")
         print(f"X_CT0: {x_ct0_status}")
         print(f"BROWSER_PROFILE_DIR: {self.browser_profile_dir}")
