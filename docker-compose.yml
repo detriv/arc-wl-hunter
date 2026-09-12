@@ -1,0 +1,13 @@
+services:
+  arc-wl-hunter:
+    build: .
+    container_name: arc-wl-hunter
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+    # For headless browser
+    shm_size: "2gb"
+    # Optional: run as specific user
+    # user: "1000:1000"

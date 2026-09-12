@@ -52,6 +52,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="Test parser with sample data",
     )
     parser.add_argument(
+        "--web",
+        action="store_true",
+        help="Run with FastAPI web server (for cloud deployment)",
+    )
+    parser.add_argument(
         "--stats",
         action="store_true",
         help="Show database statistics",
@@ -279,6 +284,14 @@ async def async_main() -> None:
             await run_test_parser(config, logger)
         elif args.stats:
             await run_stats(config, logger)
+        elif args.web:
+            # Run with FastAPI web server (for cloud deployment)
+            import uvicorn
+            from main import app
+            import os
+
+            port = int(os.getenv("PORT", "8000"))
+            uvicorn.run(app, host="0.0.0.0", port=port)
         else:
             # Default: continuous monitoring
             await run_monitor(config, logger, once=False)

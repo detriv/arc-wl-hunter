@@ -252,6 +252,65 @@ playwright install chromium
 
 ---
 
+## Docker Deployment
+
+### Build and run locally
+
+```bash
+docker compose up -d --build
+```
+
+### View logs
+
+```bash
+docker compose logs -f arc-wl-hunter
+```
+
+### Stop
+
+```bash
+docker compose down
+```
+
+### Deploy to cloud (fastapicloud, Railway, etc)
+
+1. Push to GitHub
+2. Connect repo to your cloud platform
+3. Set environment variables in platform dashboard:
+   - `TELEGRAM_BOT_TOKEN`
+   - `TELEGRAM_CHAT_ID`
+   - `X_AUTH_TOKEN`
+   - `X_CT0`
+   - `DISCORD_WEBHOOK_URL` (optional)
+4. Set start command: `python app.py --web`
+
+### Health check endpoint
+
+```
+GET /health
+```
+
+Returns:
+```json
+{
+  "status": "healthy",
+  "telegram": true,
+  "discord": true,
+  "x_cookies": true,
+  "bot_running": true
+}
+```
+
+### Stats endpoint
+
+```
+GET /stats
+```
+
+Returns database statistics.
+
+---
+
 ## License
 
 MIT

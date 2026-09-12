@@ -4,6 +4,11 @@ playwright>=1.40.0
 python-dotenv>=1.0.0
 python-telegram-bot>=20.7
 aiosqlite>=0.19.0
+httpx>=0.25.0
+
+# Web server (for cloud deployment)
+fastapi>=0.104.0
+uvicorn>=0.24.0
 
 # Testing
 pytest>=7.4.0
