@@ -23,5 +23,5 @@ RUN mkdir -p data
 
 EXPOSE 8000
 
-# Default: run the bot
-CMD ["python", "app.py"]
+# For cloud deployment (fastapicloud, etc)
+CMD ["fastapi", "run", "--port", "8000", "main.py"]

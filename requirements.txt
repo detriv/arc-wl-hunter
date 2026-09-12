@@ -7,7 +7,7 @@ aiosqlite>=0.19.0
 httpx>=0.25.0
 
 # Web server (for cloud deployment)
-fastapi>=0.104.0
+fastapi[standard]>=0.104.0
 uvicorn>=0.24.0
 
 # Testing

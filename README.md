@@ -282,7 +282,7 @@ docker compose down
    - `X_AUTH_TOKEN`
    - `X_CT0`
    - `DISCORD_WEBHOOK_URL` (optional)
-4. Set start command: `python app.py --web`
+4. Set start command: `fastapi run --port 8000`
 
 ### Health check endpoint
 
