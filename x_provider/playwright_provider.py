@@ -333,6 +333,10 @@ class PlaywrightXProvider(XProvider):
             if not tweet_id:
                 return None
 
+            # If no tweet_url found, construct one
+            if not tweet_url and author_username and tweet_id:
+                tweet_url = f"https://x.com/{author_username}/status/{tweet_id}"
+
             # Extract text
             text = ""
             text_el = await article.query_selector(TEXT_SELECTOR)

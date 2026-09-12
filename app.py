@@ -108,14 +108,25 @@ async def run_test_x(config: Config, logger) -> None:
 
         query = '"Arc Network" NFT whitelist'
         logger.info(f"Searching: {query}")
-        posts = await provider.search_posts(query, max_results=5)
+        posts = await provider.search_posts(query, max_results=10)
         logger.info(f"Found {len(posts)} posts")
 
-        for i, post in enumerate(posts[:3], 1):
+        for i, post in enumerate(posts, 1):
             logger.info(f"--- Post {i} ---")
             logger.info(f"Author: @{post.author_username}")
-            logger.info(f"Text: {post.text[:100]}...")
+            logger.info(f"Text: {post.text[:150]}...")
             logger.info(f"URL: {post.tweet_url}")
+            logger.info(f"Created: {post.created_at}")
+            if post.urls:
+                logger.info(f"URLs: {post.urls}")
+            if post.hashtags:
+                logger.info(f"Tags: {post.hashtags}")
+            logger.info("")
+
+        print(f"\n✓ Test complete. Found {len(posts)} posts.")
+        print("  Press ENTER to close browser...")
+        input()
+
     finally:
         await provider.close()
 
