@@ -41,6 +41,10 @@ class Config:
     telegram_bot_token: str | None = None
     telegram_chat_id: str | None = None
 
+    # X (Twitter) session cookies
+    x_auth_token: str | None = None
+    x_ct0: str | None = None
+
     # Browser
     browser_profile_dir: str = "data/browser-profile"
     browser_headless: bool = False
@@ -84,6 +88,8 @@ class Config:
         return cls(
             telegram_bot_token=_getenv("TELEGRAM_BOT_TOKEN"),
             telegram_chat_id=_getenv("TELEGRAM_CHAT_ID"),
+            x_auth_token=_getenv("X_AUTH_TOKEN"),
+            x_ct0=_getenv("X_CT0"),
             browser_profile_dir=_getenv("BROWSER_PROFILE_DIR", "data/browser-profile"),
             browser_headless=_getenv_bool("BROWSER_HEADLESS", False),
             poll_interval_seconds=_getenv_int("POLL_INTERVAL_SECONDS", 300),
@@ -129,15 +135,23 @@ class Config:
         """Check if Telegram credentials are available."""
         return bool(self.telegram_bot_token and self.telegram_chat_id)
 
+    def x_cookies_configured(self) -> bool:
+        """Check if X session cookies are available."""
+        return bool(self.x_auth_token and self.x_ct0)
+
     def print_status(self) -> None:
         """Print configuration status (without secrets)."""
         token_status = "SET" if self.telegram_bot_token else "NOT SET"
         chat_status = "SET" if self.telegram_chat_id else "NOT SET"
+        x_auth_status = "SET" if self.x_auth_token else "NOT SET"
+        x_ct0_status = "SET" if self.x_ct0 else "NOT SET"
 
         print("CONFIGURATION STATUS")
         print("--------------------")
         print(f"TELEGRAM_BOT_TOKEN: {token_status}")
         print(f"TELEGRAM_CHAT_ID: {chat_status}")
+        print(f"X_AUTH_TOKEN: {x_auth_status}")
+        print(f"X_CT0: {x_ct0_status}")
         print(f"BROWSER_PROFILE_DIR: {self.browser_profile_dir}")
         print(f"BROWSER_HEADLESS: {self.browser_headless}")
         print(f"POLL_INTERVAL_SECONDS: {self.poll_interval_seconds}")

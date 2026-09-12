@@ -57,6 +57,11 @@ TELEGRAM_CHAT_ID=
 BROWSER_PROFILE_DIR=data/browser-profile
 BROWSER_HEADLESS=false
 
+# X (Twitter) Session Cookies
+# Get from Chrome: F12 → Application → Cookies → x.com → auth_token & ct0
+X_AUTH_TOKEN=
+X_CT0=
+
 # Monitoring
 POLL_INTERVAL_SECONDS=300
 
@@ -96,14 +101,32 @@ python app.py --test-telegram
 
 ## X Account Setup
 
+X login via browser automation is often blocked. Instead, we use session cookies from your existing browser.
+
 ```bash
 python app.py --login
 ```
 
-1. Chromium opens
-2. Log into your X account manually
-3. Return to terminal and press ENTER
-4. Session is saved to `data/browser-profile/`
+This will show instructions. Here's the summary:
+
+1. Open https://x.com in Chrome/Firefox and login normally
+2. Press `F12` → **Application** → **Cookies** → `https://x.com`
+3. Find `auth_token` → copy the **Value**
+4. Find `ct0` → copy the **Value**
+5. Open `.env` and paste:
+
+```env
+X_AUTH_TOKEN=<paste auth_token value here>
+X_CT0=<paste ct0 value here>
+```
+
+6. Test:
+
+```bash
+python app.py --test-x
+```
+
+> **Note:** Session cookies typically last weeks/months. If auth fails, refresh them from your browser.
 
 ---
 
@@ -187,16 +210,23 @@ python app.py --login
 ## Security
 
 - NEVER commit `.env`
-- NEVER share your browser profile
+- NEVER share your X session cookies (`auth_token`, `ct0`)
 - NEVER expose your Telegram token
-- The browser profile contains sensitive session data
+- If cookies are compromised, change your X password immediately
 - Use a dedicated X account
 
 ---
 
 ## Troubleshooting
 
-### X session expired
+### X session expired / not authenticated
+
+Your cookies may be expired. Refresh them:
+
+1. Open https://x.com in Chrome/F2
+2. F12 → Application → Cookies → https://x.com
+3. Copy fresh `auth_token` and `ct0` values
+4. Update `.env`
 
 ```bash
 python app.py --login

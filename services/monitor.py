@@ -56,8 +56,13 @@ class Monitor:
         # Validate X session
         is_auth = await self.provider.validate_session()
         if not is_auth:
-            self.logger.error("X session not authenticated!")
-            self.logger.error("Please run: python app.py --login")
+            if self.config.x_cookies_configured():
+                self.logger.error("X session not authenticated — cookies may be expired.")
+                self.logger.error("Please refresh X_AUTH_TOKEN and X_CT0 in .env.")
+                self.logger.error("Run: python app.py --login")
+            else:
+                self.logger.error("X session not authenticated!")
+                self.logger.error("Please run: python app.py --login")
             raise RuntimeError("X session not authenticated")
 
         self.logger.info("All components initialized successfully.")

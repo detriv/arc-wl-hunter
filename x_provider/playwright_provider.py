@@ -68,7 +68,34 @@ class PlaywrightXProvider(XProvider):
         else:
             self._page = await self._context.new_page()
 
+        # Inject X session cookies if configured
+        if self.config.x_cookies_configured():
+            await self._inject_x_cookies()
+
         self.logger.info("Chromium launched successfully.")
+
+    async def _inject_x_cookies(self) -> None:
+        """Inject X session cookies from .env into the browser context."""
+        self.logger.info("Injecting X session cookies...")
+        cookies = [
+            {
+                "name": "auth_token",
+                "value": self.config.x_auth_token,
+                "domain": ".x.com",
+                "path": "/",
+                "secure": True,
+                "httpOnly": True,
+            },
+            {
+                "name": "ct0",
+                "value": self.config.x_ct0,
+                "domain": ".x.com",
+                "path": "/",
+                "secure": True,
+            },
+        ]
+        await self._context.add_cookies(cookies)
+        self.logger.info("X session cookies injected.")
 
     async def close(self) -> None:
         """Close browser and cleanup."""

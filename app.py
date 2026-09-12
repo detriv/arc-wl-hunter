@@ -55,15 +55,31 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 async def run_login(config: Config, logger) -> None:
-    """Launch browser for manual X login."""
-    from x_provider.playwright_provider import PlaywrightXProvider
-
-    logger.info("Starting Chromium for X login...")
-    provider = PlaywrightXProvider(config, logger)
-    try:
-        await provider.login_flow()
-    finally:
-        await provider.close()
+    """Show instructions for X login via cookies."""
+    print()
+    print("=" * 55)
+    print("  X (Twitter) Authentication via Cookies")
+    print("=" * 55)
+    print()
+    print("  X login via browser automation is often blocked.")
+    print("  Instead, we use session cookies from your browser.")
+    print()
+    print("  Steps:")
+    print()
+    print("  1. Open https://x.com in Chrome/Firefox")
+    print("  2. Login normally (if not already)")
+    print("  3. Press F12 → Application → Cookies → https://x.com")
+    print("  4. Find 'auth_token' → copy Value")
+    print("  5. Find 'ct0' → copy Value")
+    print("  6. Open .env and paste:")
+    print()
+    print("     X_AUTH_TOKEN=<auth_token value>")
+    print("     X_CT0=<ct0 value>")
+    print()
+    print("  7. Run: python app.py --test-x")
+    print()
+    print("=" * 55)
+    print()
 
 
 async def run_monitor(config: Config, logger, once: bool = False) -> None:
