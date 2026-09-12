@@ -2,13 +2,13 @@
 
 This wraps the bot with a minimal HTTP server so platforms like
 fastapicloud can health-check and manage the service.
+Uses HttpXProvider (no browser needed) for cloud compatibility.
 """
 from __future__ import annotations
 
 import asyncio
 import logging
 import os
-import subprocess
 import sys
 from contextlib import asynccontextmanager
 
@@ -37,11 +37,14 @@ async def lifespan(app: FastAPI):
     global bot_task
     config = Config.load()
 
-    if config.validate():
+    errors = config.validate()
+    if errors:
+        logger.warning(f"Config invalid — bot not started: {errors}")
+    elif not config.x_cookies_configured():
+        logger.warning("X cookies not configured — bot not started")
+    else:
         logger.info("Starting bot in background...")
         bot_task = asyncio.create_task(run_bot())
-    else:
-        logger.warning("Config invalid — bot not started. Check .env")
 
     yield
 

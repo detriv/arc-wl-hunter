@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
 from datetime import datetime, timezone
 
 from config import Config
@@ -11,6 +12,7 @@ from models.post import Post
 from parser.post_parser import PostParser
 from scoring.scorer import Scorer
 from services.dedup import Deduplicator
+from x_provider.provider import XProvider
 from x_provider.playwright_provider import PlaywrightXProvider
 from notifier.telegram import TelegramNotifier
 
@@ -25,7 +27,7 @@ class Monitor:
 
         # Components (initialized in run)
         self.db: Database | None = None
-        self.provider: PlaywrightXProvider | None = None
+        self.provider: XProvider | None = None
         self.parser = PostParser()
         self.scorer = Scorer(config, logger)
         self.dedup: Deduplicator | None = None
@@ -57,8 +59,16 @@ class Monitor:
         else:
             self.logger.info("Discord notifications: DISABLED (not configured)")
 
-        # Browser
-        self.provider = PlaywrightXProvider(self.config, self.logger)
+        # X Provider — use HTTP for cloud (no browser), Playwright for local
+        use_http = os.getenv("USE_HTTP_PROVIDER", "").lower() in ("1", "true", "yes")
+
+        if use_http:
+            self.logger.info("Using HTTP X provider (no browser)")
+            from x_provider.http_provider import HttpXProvider
+            self.provider = HttpXProvider(self.config, self.logger)
+        else:
+            self.logger.info("Using Playwright X provider (browser)")
+            self.provider = PlaywrightXProvider(self.config, self.logger)
         await self.provider.initialize()
 
         # Validate X session
