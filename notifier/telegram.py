@@ -36,7 +36,7 @@ class TelegramNotifier:
             await self._bot.send_message(
                 chat_id=self.config.telegram_chat_id,
                 text=format_test_message(),
-                parse_mode=ParseMode.MARKDOWN_V2,
+                parse_mode=ParseMode.HTML,
             )
             return True
         except Exception as e:
@@ -64,7 +64,7 @@ class TelegramNotifier:
             await self._bot.send_message(
                 chat_id=self.config.telegram_chat_id,
                 text=message,
-                parse_mode=ParseMode.MARKDOWN_V2,
+                parse_mode=ParseMode.HTML,
                 disable_web_page_preview=False,
             )
             self.logger.info(
