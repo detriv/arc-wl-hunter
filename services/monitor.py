@@ -59,10 +59,18 @@ class Monitor:
         else:
             self.logger.info("Discord notifications: DISABLED (not configured)")
 
-        # X Provider — use HTTP for cloud (no browser), Playwright for local
+        # X Provider — pick based on env:
+        # USE_TWITTER_API=true → Twitter API v2 (cloud, Bearer Token)
+        # USE_HTTP_PROVIDER=true → HTTP GraphQL (cloud, cookies)
+        # otherwise → Playwright (local, browser)
+        use_twitter_api = os.getenv("USE_TWITTER_API", "").lower() in ("1", "true", "yes")
         use_http = os.getenv("USE_HTTP_PROVIDER", "").lower() in ("1", "true", "yes")
 
-        if use_http:
+        if use_twitter_api:
+            self.logger.info("Using Twitter API v2 provider (Bearer Token)")
+            from x_provider.twitter_api_provider import TwitterApiProvider
+            self.provider = TwitterApiProvider(self.config, self.logger)
+        elif use_http:
             self.logger.info("Using HTTP X provider (no browser)")
             from x_provider.http_provider import HttpXProvider
             self.provider = HttpXProvider(self.config, self.logger)

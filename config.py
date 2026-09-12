@@ -44,9 +44,12 @@ class Config:
     # Discord (optional)
     discord_webhook_url: str | None = None
 
-    # X (Twitter) session cookies
+    # X (Twitter) session cookies (for local Playwright)
     x_auth_token: str | None = None
     x_ct0: str | None = None
+
+    # Twitter API (for cloud deployment where cookies don't work)
+    twitter_bearer_token: str | None = None
 
     # Browser
     browser_profile_dir: str = "data/browser-profile"
@@ -94,6 +97,7 @@ class Config:
             discord_webhook_url=_getenv("DISCORD_WEBHOOK_URL"),
             x_auth_token=_getenv("X_AUTH_TOKEN"),
             x_ct0=_getenv("X_CT0"),
+            twitter_bearer_token=_getenv("TWITTER_BEARER_TOKEN"),
             browser_profile_dir=_getenv("BROWSER_PROFILE_DIR", "data/browser-profile"),
             browser_headless=_getenv_bool("BROWSER_HEADLESS", False),
             poll_interval_seconds=_getenv_int("POLL_INTERVAL_SECONDS", 300),
